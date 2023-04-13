@@ -1,7 +1,6 @@
 .App {
   text-align: center;
 }
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +34,23 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.title{
+  display: flex;
+  width: 100%;
+  
+  background-color: black;
+  color: white;
+  padding-left: 20px;
+}
+
+div{
+  box-sizing: border-box;
+}
+
+.list {
+  padding-left: 20px;
+  text-align: left;
+  border-bottom: 1px solid black;
 }
