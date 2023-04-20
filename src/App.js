@@ -1,14 +1,16 @@
 import logo from './logo.svg';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './App.css';
 
 function App() {
  // let [a, b] = useState(['남자 코트 추천','강남 우동 맛집','파이썬 독학']) <== 이렇게도 적을 수 있음 (구조분해할당문법) 
-let [title, istitle]=useState(['남자 코트 추천','강남 우동 맛집','파이썬 독학'])
-let [countlike, iscountlike]=useState([0,0,0])
-let [modal, ismodal]=useState(false)
-let [modaltitle, ismodaltitle] = useState(0)
-let [input, setinput]= useState('')
+const [title, istitle]=useState(['남자 코트 추천','강남 우동 맛집','파이썬 독학'])
+const [countlike, iscountlike]=useState([0,0,0])
+const [modal, ismodal]=useState(false)
+const [modaltitle, ismodaltitle] = useState(0)
+const [input, setinput]= useState('')
+const today =useRef(new Date().toLocaleString());
+
 
 
 useEffect(()=>{
@@ -40,10 +42,14 @@ function sort(){
 
 // 모달창 state 화 시키기 
 function modalstate (){
-
 ismodal(!modal)
-
 }
+
+// input 글추가 관련 
+function inputState (e){
+  setinput(e.target.value);
+}
+
 
 
   return (
@@ -51,27 +57,10 @@ ismodal(!modal)
     <div className='title'>
       <h4>ReactBlog</h4>
     </div>
-    {/* <div className='list'>
-      <button onClick={sort}>가나다순 정렬</button>
-      <button onClick={change}>글 제목 바꾸기</button>
-    <h4>{title[0]} <sapn onClick={like}>👍🏻</sapn>{countlike}</h4>
-    <p>2월 17일</p>
-    </div>
-
-    <div className='list'>
-    <h4>{title[1]}</h4>
-    <p>2월 17일</p>
-    </div>
-
-    <div className='list'>
-    <h4 onClick={modalstate}>{title[2]}</h4>
-    <p>2월 17일</p>
-    </div> */}
-
  {
   title.map((el,i)=>{
     return(
-      <div className='list'>
+      <div className='list' key={i}>
       <h4 onClick={()=>{modalstate(); ismodaltitle(i)}}>{el}<sapn onClick={(e)=>{
         // 이번트 버블링 막아주는 메서드~ 
         e.stopPropagation()
@@ -80,7 +69,9 @@ ismodal(!modal)
         iscountlike(copy)
         
       }}>👍🏻</sapn>{countlike[i]}</h4>
-      <p>2월 17일</p>
+
+      <p>{today.current}</p>
+
       <button key={i} onClick={(e)=>{  
         // 글 삭제 버튼 도 비슷하게 복사본 만들어서 삭제할 요소 제거하고 다시 리렌더링
         let copy=[...title]
@@ -93,11 +84,13 @@ ismodal(!modal)
   })
  }
 
-
- <input type='text' onChange={(e)=>{ 
-  setinput(e.target.value);
+  {/* 글 추가 input 버튼 */}
+ <input type='text' value={input} onChange={(e)=>{ 
+  inputState(e)
    }}></input> <button onClick={()=>{
-    // 글 추가 
+    // 인풋요소에 입력이 있어야 글 추가 가능 
+    if(input.length !== 0){
+      //타이틀 추가 
     let copy = [...title]
     copy.unshift(input)
     istitle(copy)
@@ -105,15 +98,25 @@ ismodal(!modal)
     let arr =[...countlike]
     arr.unshift(0)
     iscountlike(arr)
+    // 글 추가 버튼 누를 시 인풋요소 빈 문자열로 만들어주기
+    setinput("")
+   
+    }
    }}>글 추가 </button>
 
 
-   {
+    {
       modal?<Modal modaltitle={modaltitle} change={change} title={title}/>: null
     }
     </div>
   );
 }
+
+
+
+
+
+
 
 // 모달 컴포넌트 사용 
 function Modal(props){
